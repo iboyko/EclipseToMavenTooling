@@ -44,6 +44,7 @@ public class EclipsePluginParser
     public static final String BUNDLE_SYMBOLICNAME = "Bundle-SymbolicName";
     public static final String BUNDLE_VERSION = "Bundle-Version";
     public static final int MAX_VERSION_POINTS = 2;
+    public static final String FEATURE_ARTIFACT_ID = "feature";
 
     public static enum GOALS
         {
@@ -93,6 +94,7 @@ public class EclipsePluginParser
             {
             String version = null;
             String symbolicName = null;
+            boolean isFeature = false;
 
             if (f.getName().toLowerCase().endsWith(".jar"))
                 {
@@ -122,6 +124,7 @@ public class EclipsePluginParser
                             {
                             symbolicName = infos[0];
                             version = infos[1];
+                            isFeature = true;
                             }
                         }
                     catch (Exception e)
@@ -162,6 +165,7 @@ public class EclipsePluginParser
                             {
                             symbolicName = infos[0];
                             version = infos[1];
+                            isFeature = true;
                             }
                         }
                     catch (Exception e)
@@ -197,9 +201,19 @@ public class EclipsePluginParser
                     }
                 String coreName = f.getName().substring(0, pos);
                 int separatorIdx = coreName.lastIndexOf('.');
-                String groupId = coreName.substring(0,
-                                                    separatorIdx == -1 ? coreName.length() : separatorIdx);
-                String artifactId = coreName.substring(separatorIdx == -1 ? 0 : separatorIdx + 1);
+                String groupId = null;
+                String artifactId = null;
+                if(isFeature)
+                    {
+                    groupId = coreName;
+                    artifactId = FEATURE_ARTIFACT_ID;
+                    }
+                else
+                    {
+                    groupId = coreName.substring(0,
+                                                        separatorIdx == -1 ? coreName.length() : separatorIdx);
+                    artifactId = coreName.substring(separatorIdx == -1 ? 0 : separatorIdx + 1);
+                    }
 
                 // all info gathered...now put to output
                 result.append(String.format("\t<%s>\n", outputTag));
