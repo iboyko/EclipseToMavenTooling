@@ -121,7 +121,7 @@
           </component>
           <grid id="4e2d4" binding="panel_results" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
-              <grid row="7" column="0" row-span="1" col-span="4" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="8" column="0" row-span="1" col-span="4" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
               <gridbag weightx="1.0" weighty="1.0"/>
             </constraints>
             <properties/>
@@ -144,19 +144,9 @@
               </scrollpane>
             </children>
           </grid>
-          <component id="3e78e" class="javax.swing.JButton" binding="btnAnalyze">
-            <constraints>
-              <grid row="6" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-              <gridbag weightx="0.0" weighty="0.0"/>
-            </constraints>
-            <properties>
-              <text value="Generate"/>
-              <toolTipText value="Click here to start analyzer..."/>
-            </properties>
-          </component>
           <component id="b4697" class="javax.swing.JButton" binding="btnCopyToClipboard">
             <constraints>
-              <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
               <gridbag weightx="1.0" weighty="0.0"/>
             </constraints>
             <properties>
@@ -166,7 +156,7 @@
           </component>
           <component id="d99ea" class="javax.swing.JButton" binding="btnSaveToFile">
             <constraints>
-              <grid row="8" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="9" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
               <gridbag weightx="0.0" weighty="0.0"/>
             </constraints>
             <properties>
@@ -240,6 +230,25 @@
               </component>
             </children>
           </grid>
+          <component id="51750" class="javax.swing.JCheckBox" binding="checkCreateSiteXML">
+            <constraints>
+              <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value="Generate site.xml"/>
+            </properties>
+          </component>
+          <component id="8937f" class="javax.swing.JButton" binding="btnAnalyze">
+            <constraints>
+              <grid row="7" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value="Generate"/>
+              <toolTipText value="Click here to start analyzer..."/>
+            </properties>
+          </component>
         </children>
       </grid>
     </children>

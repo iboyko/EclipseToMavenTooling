@@ -62,6 +62,7 @@ public class EclipsePluginParser
     private String targetEclipseFolder;
     private GOALS pluginsGoal;
     private String outputTag;
+    private boolean createSiteXML = false;
 
     /**
      * parses the plugins folder of the eclipseDir
@@ -87,8 +88,14 @@ public class EclipsePluginParser
 
 
         StringBuffer result = new StringBuffer();
-        result.append(String.format("<%s>\n", getMulti(this.outputTag)));
-
+        if(isCreateSiteXML())
+            {
+            result.append("<site>\n");
+            }
+        else
+            {
+            result.append(String.format("<%s>\n", getMulti(this.outputTag)));
+            }
         // loop plugin folder content
         for (File f : plugins)
             {
@@ -152,7 +159,8 @@ public class EclipsePluginParser
 
                  // try feature
                 if (version == null &&
-                        (getPluginsGoal() == GOALS.FEATURE_ALL ||
+                        (isCreateSiteXML() ||
+                        getPluginsGoal() == GOALS.FEATURE_ALL ||
                         getPluginsGoal() == GOALS.FEATURE_SOURCES ||
                         getPluginsGoal() == GOALS.FEATURES))
                     {
@@ -214,28 +222,42 @@ public class EclipsePluginParser
                                                         separatorIdx == -1 ? coreName.length() : separatorIdx);
                     artifactId = coreName.substring(separatorIdx == -1 ? 0 : separatorIdx + 1);
                     }
-
-                // all info gathered...now put to output
-                result.append(String.format("\t<%s>\n", outputTag));
-                result.append(String.format("\t\t<groupId>%s</groupId>\n", groupId));
-                result.append(String.format("\t\t<artifactId>%s</artifactId>\n", artifactId));
-                if (includeVersionsTag)
+                if(isCreateSiteXML())
                     {
-                    result.append(String.format("\t\t<version>%s</version>\n", osgiVersion));
+                    String featureJarFile = String.format("features/%s_%s.jar", symbolicName, version);
+                    result.append(String.format("\t<feature url=\"%s\" id=\"%s\" version=\"%s\"/>\n",
+                                                featureJarFile, symbolicName, version));
                     }
-                if (markAsOptional)
+                else
                     {
-                    result.append("\t\t<optional>true</optional>\n");
+                    // all info gathered...now put to output
+                    result.append(String.format("\t<%s>\n", outputTag));
+                    result.append(String.format("\t\t<groupId>%s</groupId>\n", groupId));
+                    result.append(String.format("\t\t<artifactId>%s</artifactId>\n", artifactId));
+                    if (includeVersionsTag)
+                        {
+                        result.append(String.format("\t\t<version>%s</version>\n", osgiVersion));
+                        }
+                    if (markAsOptional)
+                        {
+                        result.append("\t\t<optional>true</optional>\n");
+                        }
+                    if (symbolicName != null && includeSymbolicsComment)
+                        {
+                        result.append(String.format("\t\t<!-- Bundle-SymbolicName: %s -->\n", symbolicName));
+                        }
+                    result.append(String.format("\t</%s>\n", outputTag));
                     }
-                if (symbolicName != null && includeSymbolicsComment)
-                    {
-                    result.append(String.format("\t\t<!-- Bundle-SymbolicName: %s -->\n", symbolicName));
-                    }
-                result.append(String.format("\t</%s>\n", outputTag));
                 }
             }
-
-        result.append(String.format("</%s>\n", getMulti(outputTag)));
+        if(isCreateSiteXML())
+            {
+            result.append("</site>\n");
+            }
+        else
+            {
+            result.append(String.format("</%s>\n", getMulti(outputTag)));
+            }
 
         return result.toString();
 
@@ -243,9 +265,9 @@ public class EclipsePluginParser
 
     private File[] getFolderContents() throws IOException
         {
-        if (getPluginsGoal() == GOALS.PLUGINS ||
+        if (!isCreateSiteXML() && (getPluginsGoal() == GOALS.PLUGINS ||
                 getPluginsGoal() == GOALS.PLUGIN_ALL ||
-                getPluginsGoal() == GOALS.PLUGIN_SOURCES)
+                getPluginsGoal() == GOALS.PLUGIN_SOURCES))
             {
 
             File pluginsFolder = new File(targetEclipseFolder, "plugins");
@@ -382,7 +404,7 @@ public class EclipsePluginParser
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc = db.parse(is);
         doc.getDocumentElement().normalize();
-        return new String[]{null, doc.getDocumentElement().getAttribute("version")};
+        return new String[]{doc.getDocumentElement().getAttribute("id"), doc.getDocumentElement().getAttribute("version")};
         }
 
 
@@ -544,5 +566,15 @@ public class EclipsePluginParser
     public void setOutputTag(String outputTag)
         {
             this.outputTag = outputTag;
+        }
+
+    public boolean isCreateSiteXML()
+        {
+        return createSiteXML;
+        }
+
+    public void setCreateSiteXML(boolean createSiteXML)
+        {
+        this.createSiteXML = createSiteXML;
         }
     }
